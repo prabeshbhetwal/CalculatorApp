@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "./Button";
 import { evaluate } from "mathjs";
-import { Alert } from "react-bootstrap";
 
 export const Calculator = () => {
   const operators = ["+", "-", "%", "*", "/"];
