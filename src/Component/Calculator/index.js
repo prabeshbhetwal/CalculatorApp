@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Button } from "./Button";
 import { evaluate } from "mathjs";
+import { inject } from "@vercel/analytics";
+
+inject();
 
 export const Calculator = () => {
   const operators = ["+", "-", "%", "*", "/"];
@@ -97,17 +100,21 @@ export const Calculator = () => {
         const result = evaluate(displayValue);
         setDisplayValue(result.toString());
       } catch (error) {
-        alert("Sorry, the calculation is wrong. Please Check!");
+        alert("Sorry, the calculation is wrong. Please check!");
       }
     } else {
-      setDisplayValue((prevDisplay) =>
-        prevDisplay === "0" && !operators.includes(value)
-          ? value
-          : !operators.includes(prevDisplay.slice(-1)) ||
-            !operators.includes(value)
-          ? prevDisplay + value
-          : prevDisplay
-      );
+      setDisplayValue((prevDisplay) => {
+        if (prevDisplay === "0" && !operators.includes(prevDisplay.slice(-1))) {
+          return value;
+        } else if (
+          operators.includes(prevDisplay.slice(-1)) &&
+          operators.includes(value)
+        ) {
+          return prevDisplay.slice(0, -1) + value;
+        } else {
+          return prevDisplay + value;
+        }
+      });
     }
   };
 
